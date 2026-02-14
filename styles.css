@@ -443,6 +443,8 @@ code {
         text-align: left;
         padding: 10px 0;
         border: none !important;
+        word-break: break-word;
+        overflow-wrap: break-word;
     }
 
     .comparison-table td:first-child {
@@ -460,6 +462,7 @@ code {
         display: inline-block;
         width: 140px;
         color: #2c3e50;
+        vertical-align: top;
     }
 
     .comparison-table td:first-child:before {
