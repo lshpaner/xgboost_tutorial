@@ -55,7 +55,7 @@ Simply open `index.html` in any modern web browser
 ## Credits
 
 Created by Leon Shpaner  
-© 2025
+© 2026
 
 ## License
 
