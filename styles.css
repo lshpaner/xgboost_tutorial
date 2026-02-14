@@ -445,6 +445,8 @@ code {
         border: none !important;
         word-break: break-word;
         overflow-wrap: break-word;
+        display: flex;
+        gap: 10px;
     }
 
     .comparison-table td:first-child {
@@ -454,15 +456,16 @@ code {
         margin-bottom: 10px;
         border-bottom: 2px solid #e0e0e0 !important;
         padding-bottom: 10px;
+        display: block;
     }
 
     .comparison-table td:before {
         content: attr(data-label);
         font-weight: bold;
-        display: inline-block;
-        width: 140px;
+        min-width: 110px;
+        max-width: 110px;
         color: #2c3e50;
-        vertical-align: top;
+        flex-shrink: 0;
     }
 
     .comparison-table td:first-child:before {
