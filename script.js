@@ -425,7 +425,7 @@
                 .append('svg')
                 .attr('width', '100%')
                 .attr('height', height)
-                .attr('viewBox', `0 0 ${adjustedWidth} ${height}`)
+                .attr('viewBox', `18 0 ${adjustedWidth} ${height}`)
                 .attr('preserveAspectRatio', 'xMidYMid meet');
             
             const g = svg.append('g')
@@ -433,7 +433,7 @@
             
             // Create tree layout with better spacing
             const treeLayout = d3.tree()
-                .size([adjustedWidth - 80, height - 80])
+                .size([adjustedWidth - 0.05, height - 80])
                 .separation((a, b) => (a.parent == b.parent ? 1 : 1.2));
             
             // Convert to d3 hierarchy
@@ -512,7 +512,7 @@
             
             // Add labels below nodes with better visibility
             nodes.append('text')
-                .attr('dy', '3.2em')
+                .attr('dy', '4.9em')
                 .attr('text-anchor', 'middle')
                 .style('font-size', '11px')
                 .style('font-weight', '600')
