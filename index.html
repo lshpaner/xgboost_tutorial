@@ -253,7 +253,7 @@ $$w_j^* = -\frac{\sum_{i \in I_j} g_i}{\sum_{i \in I_j} h_i + \lambda}$$
             <!-- Comparison -->
             <div class="section">
                 <h2>XGBoost vs Other Algorithms</h2>
-                <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+                <table class="comparison-table">
                     <thead>
                         <tr style="background: #2c3e50; color: white;">
                             <th style="padding: 15px; text-align: left;">Feature</th>
@@ -265,33 +265,33 @@ $$w_j^* = -\frac{\sum_{i \in I_j} g_i}{\sum_{i \in I_j} h_i + \lambda}$$
                     <tbody>
                         <tr style="background: #f8f9fa;">
                             <td style="padding: 12px; border: 1px solid #ddd;"><strong>Training</strong></td>
-                            <td style="padding: 12px; border: 1px solid #ddd;">Sequential</td>
-                            <td style="padding: 12px; border: 1px solid #ddd;">Parallel</td>
-                            <td style="padding: 12px; border: 1px solid #ddd;">Sequential</td>
+                            <td style="padding: 12px; border: 1px solid #ddd;" data-label="XGBoost: ">Sequential</td>
+                            <td style="padding: 12px; border: 1px solid #ddd;" data-label="Random Forest: ">Parallel</td>
+                            <td style="padding: 12px; border: 1px solid #ddd;" data-label="Gradient Boosting: ">Sequential</td>
                         </tr>
                         <tr>
                             <td style="padding: 12px; border: 1px solid #ddd;"><strong>Regularization</strong></td>
-                            <td style="padding: 12px; border: 1px solid #ddd;"><span class="checkmark">✓</span> Built-in L1/L2</td>
-                            <td style="padding: 12px; border: 1px solid #ddd;"><span class="xmark">✗</span> Limited</td>
-                            <td style="padding: 12px; border: 1px solid #ddd;"><span class="xmark">✗</span> Limited</td>
+                            <td style="padding: 12px; border: 1px solid #ddd;" data-label="XGBoost: "><span class="checkmark">✓</span> Built-in L1/L2</td>
+                            <td style="padding: 12px; border: 1px solid #ddd;" data-label="Random Forest: "><span class="xmark">✗</span> Limited</td>
+                            <td style="padding: 12px; border: 1px solid #ddd;" data-label="Gradient Boosting: "><span class="xmark">✗</span> Limited</td>
                         </tr>
                         <tr style="background: #f8f9fa;">
                             <td style="padding: 12px; border: 1px solid #ddd;"><strong>Speed</strong></td>
-                            <td style="padding: 12px; border: 1px solid #ddd;">Fast (optimized)</td>
-                            <td style="padding: 12px; border: 1px solid #ddd;">Fast (parallel)</td>
-                            <td style="padding: 12px; border: 1px solid #ddd;">Slower</td>
+                            <td style="padding: 12px; border: 1px solid #ddd;" data-label="XGBoost: ">Fast (optimized)</td>
+                            <td style="padding: 12px; border: 1px solid #ddd;" data-label="Random Forest: ">Fast (parallel)</td>
+                            <td style="padding: 12px; border: 1px solid #ddd;" data-label="Gradient Boosting: ">Slower</td>
                         </tr>
                         <tr>
                             <td style="padding: 12px; border: 1px solid #ddd;"><strong>Missing Values</strong></td>
-                            <td style="padding: 12px; border: 1px solid #ddd;"><span class="checkmark">✓</span> Automatic handling</td>
-                            <td style="padding: 12px; border: 1px solid #ddd;"><span class="xmark">✗</span> Needs preprocessing</td>
-                            <td style="padding: 12px; border: 1px solid #ddd;"><span class="xmark">✗</span> Needs preprocessing</td>
+                            <td style="padding: 12px; border: 1px solid #ddd;" data-label="XGBoost: "><span class="checkmark">✓</span> Automatic handling</td>
+                            <td style="padding: 12px; border: 1px solid #ddd;" data-label="Random Forest: "><span class="xmark">✗</span> Needs preprocessing</td>
+                            <td style="padding: 12px; border: 1px solid #ddd;" data-label="Gradient Boosting: "><span class="xmark">✗</span> Needs preprocessing</td>
                         </tr>
                         <tr style="background: #f8f9fa;">
                             <td style="padding: 12px; border: 1px solid #ddd;"><strong>Overfitting Risk</strong></td>
-                            <td style="padding: 12px; border: 1px solid #ddd;">Low (with regularization)</td>
-                            <td style="padding: 12px; border: 1px solid #ddd;">Low (ensemble)</td>
-                            <td style="padding: 12px; border: 1px solid #ddd;">Higher</td>
+                            <td style="padding: 12px; border: 1px solid #ddd;" data-label="XGBoost: ">Low (with regularization)</td>
+                            <td style="padding: 12px; border: 1px solid #ddd;" data-label="Random Forest: ">Low (ensemble)</td>
+                            <td style="padding: 12px; border: 1px solid #ddd;" data-label="Gradient Boosting: ">Higher</td>
                         </tr>
                     </tbody>
                 </table>

@@ -369,6 +369,13 @@ code {
     font-weight: bold;
 }
 
+/* Comparison Table */
+.comparison-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
 /* Mobile Responsive */
 @media (max-width: 768px) {
     .content {
@@ -410,16 +417,8 @@ code {
     input[type="range"] {
         width: 100%;
     }
-}
 
-/* Responsive Table */
-.comparison-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 20px 0;
-}
-
-@media (max-width: 768px) {
+    /* Mobile-friendly comparison table */
     .comparison-table thead {
         display: none;
     }
