@@ -12,10 +12,40 @@
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     
+    <!-- AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
     <!-- Custom Styles -->
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <!-- Hamburger Menu -->
+    <button class="hamburger" id="hamburger">
+        <span class="menu-text">☰</span>
+        <span class="close-text">×</span>
+    </button>
+
+    <!-- Navigation Menu -->
+    <nav class="nav-menu" id="navMenu">
+        <h3>Navigation</h3>
+        <ul>
+            <li><a href="#what-is-xgboost">What is XGBoost?</a></li>
+            <li><a href="#xgboost-process">The XGBoost Process</a></li>
+            <li><a href="#interactive-demo">Interactive Demo</a></li>
+            <li><a href="#tree-visualization">Tree Visualization</a></li>
+            <li><a href="#sequential-building">Sequential Building</a></li>
+            <li><a href="#key-features">Key Features</a></li>
+            <li><a href="#mathematical-foundation">Mathematical Foundation</a></li>
+            <li><a href="#hyperparameter-tuning">Hyperparameter Tuning</a></li>
+            <li><a href="#comparison">vs Other Algorithms</a></li>
+            <li><a href="#when-to-use">When to Use XGBoost</a></li>
+        </ul>
+    </nav>
+
+    <!-- Overlay -->
+    <div class="overlay" id="overlay"></div>
+
     <div class="container">
         <div class="header">
             <h1>How XGBoost Works</h1>
@@ -24,8 +54,8 @@
 
         <div class="content">
             <!-- Introduction -->
-            <div class="section">
-                <h2>What is XGBoost?</h2>
+            <div class="section" data-aos="fade-up">
+                <h2 id="what-is-xgboost">What is XGBoost?</h2>
                 <p>
                     <strong>XGBoost (Extreme Gradient Boosting)</strong> is a powerful machine learning algorithm that builds an ensemble of decision trees sequentially. Each new tree corrects the errors made by the previous trees, resulting in highly accurate predictions.
                 </p>
@@ -38,8 +68,8 @@
             </div>
 
             <!-- Step-by-step Process -->
-            <div class="section">
-                <h2>The XGBoost Process</h2>
+            <div class="section" data-aos="fade-up">
+                <h2 id="xgboost-process">The XGBoost Process</h2>
                 <div class="step-indicator">
                     <div class="step active">
                         <div class="step-number">1</div>
@@ -90,8 +120,8 @@ $$\text{Gain} = \frac{1}{2}\left[\frac{G_L^2}{H_L + \lambda} + \frac{G_R^2}{H_R 
             </div>
 
             <!-- Interactive Demo -->
-            <div class="section">
-                <h2>Interactive Demo: Regression Example</h2>
+            <div class="section" data-aos="fade-up">
+                <h2 id="interactive-demo">Interactive Demo: Regression Example</h2>
                 <div class="interactive-demo">
                     <p style="margin-bottom: 20px;">
                         Adjust the parameters below to see how XGBoost learns a non-linear function. Watch how each boosting round reduces the error!
@@ -120,21 +150,21 @@ $$\text{Gain} = \frac{1}{2}\left[\frac{G_L^2}{H_L + \lambda} + \frac{G_R^2}{H_R 
                 </div>
                 
                 <div class="plot-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px;">
-                    <div style="background: white; border-radius: 8px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <div style="background: white; border-radius: 8px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" data-aos="zoom-in" data-aos-delay="100">
                         <div id="predictions-plot"></div>
                     </div>
-                    <div style="background: white; border-radius: 8px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <div style="background: white; border-radius: 8px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" data-aos="zoom-in" data-aos-delay="200">
                         <div id="residuals-plot"></div>
                     </div>
-                    <div style="background: white; border-radius: 8px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <div style="background: white; border-radius: 8px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" data-aos="zoom-in" data-aos-delay="300">
                         <div id="learning-curve"></div>
                     </div>
                 </div>
             </div>
 
             <!-- Tree Visualization Section -->
-            <div class="section">
-                <h2>Tree Structure Visualization</h2>
+            <div class="section" data-aos="fade-up">
+                <h2 id="tree-visualization">Tree Structure Visualization</h2>
                 <p>
                     Below you can see the actual decision trees built by XGBoost. Each tree makes binary splits on features to partition the data and assign predictions to leaf nodes.
                 </p>
@@ -143,8 +173,8 @@ $$\text{Gain} = \frac{1}{2}\left[\frac{G_L^2}{H_L + \lambda} + \frac{G_R^2}{H_R 
             </div>
 
             <!-- Sequential Building Section -->
-            <div class="section">
-                <h2>Sequential Tree Building Process</h2>
+            <div class="section" data-aos="fade-up">
+                <h2 id="sequential-building">Sequential Tree Building Process</h2>
                 <p>
                     Step through the boosting process to see how each tree is added sequentially. Watch how predictions improve and residuals shrink with each new tree.
                 </p>
@@ -162,8 +192,8 @@ $$\text{Gain} = \frac{1}{2}\left[\frac{G_L^2}{H_L + \lambda} + \frac{G_R^2}{H_R 
             </div>
 
             <!-- Key Features -->
-            <div class="section">
-                <h2>Key Features of XGBoost</h2>
+            <div class="section" data-aos="fade-up">
+                <h2 id="key-features">Key Features of XGBoost</h2>
                 
                 <h3>1. Regularization</h3>
                 <p>XGBoost adds L1 and L2 regularization to prevent overfitting:</p>
@@ -187,8 +217,8 @@ $$\text{where } \Omega(f) = \gamma T + \frac{1}{2}\lambda \sum_{j=1}^{T} w_j^2$$
             </div>
 
             <!-- Mathematical Foundation -->
-            <div class="section">
-                <h2>Mathematical Foundation</h2>
+            <div class="section" data-aos="fade-up">
+                <h2 id="mathematical-foundation">Mathematical Foundation</h2>
                 
                 <div class="key-concept">
                     <h4>Taylor Expansion Approximation</h4>
@@ -212,8 +242,8 @@ $$w_j^* = -\frac{\sum_{i \in I_j} g_i}{\sum_{i \in I_j} h_i + \lambda}$$
             </div>
 
             <!-- Practical Tips -->
-            <div class="section">
-                <h2>Hyperparameter Tuning Tips</h2>
+            <div class="section" data-aos="fade-up">
+                <h2 id="hyperparameter-tuning">Hyperparameter Tuning Tips</h2>
                 
                 <div class="info-box">
                     <strong>Key Parameters to Tune:</strong>
@@ -251,8 +281,8 @@ $$w_j^* = -\frac{\sum_{i \in I_j} g_i}{\sum_{i \in I_j} h_i + \lambda}$$
             </div>
 
             <!-- Comparison -->
-            <div class="section">
-                <h2>XGBoost vs Other Algorithms</h2>
+            <div class="section" data-aos="fade-up">
+                <h2 id="comparison">XGBoost vs Other Algorithms</h2>
                 <table class="comparison-table">
                     <thead>
                         <tr style="background: #2c3e50; color: white;">
@@ -298,8 +328,8 @@ $$w_j^* = -\frac{\sum_{i \in I_j} g_i}{\sum_{i \in I_j} h_i + \lambda}$$
             </div>
 
             <!-- When to Use XGBoost -->
-            <div class="section">
-                <h2>When to Use XGBoost</h2>
+            <div class="section" data-aos="fade-up">
+                <h2 id="when-to-use">When to Use XGBoost</h2>
                 
                 <div class="key-concept">
                     <h4>XGBoost excels in these scenarios:</h4>
