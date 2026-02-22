@@ -53,19 +53,34 @@
         </div>
 
         <div class="content">
-            <!-- Introduction -->
-            <div class="section" data-aos="fade-up">
-                <h2 id="what-is-xgboost">What is XGBoost?</h2>
+        <!-- Introduction -->
+        <div class="section" data-aos="fade-up">
+            <h2 id="what-is-xgboost">What is XGBoost?</h2>
+            <p>
+                <strong>XGBoost (Extreme Gradient Boosting)</strong> is a powerful machine learning algorithm that builds an ensemble of decision trees sequentially. Each new tree corrects the errors made by the previous trees, resulting in highly accurate predictions.
+            </p>
+            <div class="key-concept">
+                <h4>Core Idea</h4>
                 <p>
-                    <strong>XGBoost (Extreme Gradient Boosting)</strong> is a powerful machine learning algorithm that builds an ensemble of decision trees sequentially. Each new tree corrects the errors made by the previous trees, resulting in highly accurate predictions.
+                    Instead of training one complex model, XGBoost trains many simple models (weak learners) and combines them. Each model focuses on correcting the mistakes of the previous ones, leading to a strong overall predictor.
                 </p>
-                <div class="key-concept">
-                    <h4>Core Idea</h4>
-                    <p>
-                        Instead of training one complex model, XGBoost trains many simple models (weak learners) and combines them. Each model focuses on correcting the mistakes of the previous ones, leading to a strong overall predictor.
-                    </p>
-                </div>
             </div>
+            
+            <!-- NEW SECTION - Symbol Definitions -->
+            <div class="info-box" style="margin-top: 30px;">
+                <strong>Key Notation:</strong>
+                <ul style="margin-left: 20px; margin-top: 10px; line-height: 1.8;">
+                    <li>\(\eta\) (eta) = Learning rate (controls how much each tree contributes)</li>
+                    <li>\(F_m(x)\) = Cumulative prediction after \(m\) trees</li>
+                    <li>\(f_m(x)\) = Prediction from the \(m\)-th individual tree</li>
+                    <li>\(\lambda\) (lambda) = L2 regularization parameter (penalizes large weights)</li>
+                    <li>\(\alpha\) (alpha) = L1 regularization parameter (encourages sparsity)</li>
+                    <li>\(\gamma\) (gamma) = Complexity penalty for number of leaves</li>
+                    <li>\(g_i\) = Gradient (first derivative of loss)</li>
+                    <li>\(h_i\) = Hessian (second derivative of loss)</li>
+                </ul>
+            </div>
+        </div>
 
             <!-- Step-by-step Process -->
             <div class="section" data-aos="fade-up">
@@ -95,7 +110,8 @@
 
                 <h3>Step 1: Initialize Predictions</h3>
                 <p>Start with a simple initial prediction (often the mean for regression or log-odds for classification).</p>
-                <div class="formula">$$F_0(x) = \arg\min_{\gamma} \sum_{i=1}^{n} L(y_i, \gamma)$$</div>
+                <div class="formula">$$F_0(x) = \arg\min_{c} \sum_{i=1}^{n} L(y_i, c)$$</div>
+                <p style="font-size: 0.9em; color: #666; margin-top: 10px;">Where \(c\) is a constant initial prediction.</p>
 
                 <h3>Step 2: Compute Gradients and Hessians</h3>
                 <p>Calculate the first and second derivatives of the loss function with respect to predictions:</p>
@@ -198,13 +214,13 @@ $$\text{Gain} = \frac{1}{2}\left[\frac{G_L^2}{H_L + \lambda} + \frac{G_R^2}{H_R 
                 <h3>1. Regularization</h3>
                 <p>XGBoost adds L1 and L2 regularization to prevent overfitting:</p>
                 <div class="formula">
-$$\text{Objective} = \sum_{i=1}^{n} L(y_i, \hat{y}_i) + \sum_{k=1}^{K} \Omega(f_k)$$
-$$\text{where } \Omega(f) = \gamma T + \frac{1}{2}\lambda \sum_{j=1}^{T} w_j^2$$
+                $$\text{Objective} = \sum_{i=1}^{n} L(y_i, \hat{y}_i) + \sum_{k=1}^{K} \Omega(f_k)$$
+                $$\text{where } \Omega(f) = \gamma T + \frac{1}{2}\lambda \sum_{j=1}^{T} w_j^2 + \alpha \sum_{j=1}^{T} |w_j|$$
                 </div>
-                <p>Here, \(\gamma\) penalizes the number of leaves (\(T\)), and \(\lambda\) penalizes large leaf weights (\(w\)).</p>
+                <p>Here, \(\gamma\) penalizes the number of leaves (\(T\)), \(\lambda\) (L2) penalizes large leaf weights, and \(\alpha\) (L1) encourages sparsity.</p>
 
                 <h3>2. Tree Pruning</h3>
-                <p>Uses a "max_depth" parameter and prunes trees backward, removing splits that don't provide sufficient gain.</p>
+                <p>Uses a <code>max_depth</code> parameter and prunes trees backward, removing splits that don't provide sufficient gain.</p>
 
                 <h3>3. Handling Missing Values</h3>
                 <p>Automatically learns the best direction to handle missing values during tree building.</p>
@@ -273,8 +289,8 @@ $$w_j^* = -\frac{\sum_{i \in I_j} g_i}{\sum_{i \in I_j} h_i + \lambda}$$
                 <div class="key-concept" style="margin-top: 30px;">
                     <h4>General Strategy</h4>
                     <p>
-                        Start with a low learning rate (0.1) and many trees. Increase max_depth gradually. 
-                        Add regularization (subsample, colsample_bytree) if overfitting. Use early stopping 
+                        Start with a low learning rate (0.1) and many trees. Increase <code>max_depth</code> gradually. 
+                        Add regularization (subsample, <code>colsample_bytree</code>) if overfitting. Use early stopping 
                         with a validation set to find the optimal number of trees.
                     </p>
                 </div>
