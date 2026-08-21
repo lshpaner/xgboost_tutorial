@@ -1,24 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>How XGBoost Works - Interactive Guide</title>
-    
+
     <!-- External Libraries -->
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.11.0/math.min.js"></script>
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="https://d3js.org/d3.v7.min.js"></script>
-    
+
     <!-- AOS Animation Library -->
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    
+
     <!-- Custom Styles -->
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
     <!-- Hamburger Menu -->
     <button class="hamburger" id="hamburger">
@@ -57,13 +58,32 @@
             <div class="section" data-aos="fade-up">
                 <h2 id="what-is-xgboost">What is XGBoost?</h2>
                 <p>
-                    <strong>XGBoost (Extreme Gradient Boosting)</strong> is a powerful machine learning algorithm that builds an ensemble of decision trees sequentially. Each new tree corrects the errors made by the previous trees, resulting in highly accurate predictions.
+                    <strong>XGBoost (Extreme Gradient Boosting)</strong> is a powerful machine learning algorithm that
+                    builds an ensemble of decision trees sequentially. Each new tree corrects the errors made by the
+                    previous trees, resulting in highly accurate predictions.
                 </p>
                 <div class="key-concept">
                     <h4>Core Idea</h4>
                     <p>
-                        Instead of training one complex model, XGBoost trains many simple models (weak learners) and combines them. Each model focuses on correcting the mistakes of the previous ones, leading to a strong overall predictor.
+                        Instead of training one complex model, XGBoost trains many simple models (weak learners) and
+                        combines them. Each model focuses on correcting the mistakes of the previous ones, leading to a
+                        strong overall predictor.
                     </p>
+                </div>
+
+                <!-- NEW SECTION - Symbol Definitions -->
+                <div class="info-box" style="margin-top: 30px;">
+                    <strong>Key Notation:</strong>
+                    <ul style="margin-left: 20px; margin-top: 10px; line-height: 1.8;">
+                        <li>\(\eta\) (eta) = Learning rate (controls how much each tree contributes)</li>
+                        <li>\(F_m(x)\) = Cumulative prediction after \(m\) trees</li>
+                        <li>\(f_m(x)\) = Prediction from the \(m\)-th individual tree</li>
+                        <li>\(\lambda\) (lambda) = L2 regularization parameter (penalizes large weights)</li>
+                        <li>\(\alpha\) (alpha) = L1 regularization parameter (encourages sparsity)</li>
+                        <li>\(\gamma\) (gamma) = Complexity penalty for number of leaves</li>
+                        <li>\(g_i\) = Gradient (first derivative of loss)</li>
+                        <li>\(h_i\) = Hessian (second derivative of loss)</li>
+                    </ul>
                 </div>
             </div>
 
@@ -94,22 +114,27 @@
                 </div>
 
                 <h3>Step 1: Initialize Predictions</h3>
-                <p>Start with a simple initial prediction (often the mean for regression or log-odds for classification).</p>
-                <div class="formula">$$F_0(x) = \arg\min_{\gamma} \sum_{i=1}^{n} L(y_i, \gamma)$$</div>
+                <p>Start with a simple initial prediction (often the mean for regression or log-odds for
+                    classification).</p>
+                <div class="formula">$$F_0(x) = \arg\min_{c} \sum_{i=1}^{n} L(y_i, c)$$</div>
+                <p style="font-size: 0.9em; color: #666; margin-top: 10px;">Where \(c\) is a constant initial
+                    prediction.</p>
 
                 <h3>Step 2: Compute Gradients and Hessians</h3>
                 <p>Calculate the first and second derivatives of the loss function with respect to predictions:</p>
                 <div class="formula">
-$$g_i = \frac{\partial L(y_i, \hat{y}_i)}{\partial \hat{y}_i} \quad \text{(gradient)}$$
-$$h_i = \frac{\partial^2 L(y_i, \hat{y}_i)}{\partial \hat{y}_i^2} \quad \text{(hessian)}$$
+                    $$g_i = \frac{\partial L(y_i, \hat{y}_i)}{\partial \hat{y}_i} \quad \text{(gradient)}$$
+                    $$h_i = \frac{\partial^2 L(y_i, \hat{y}_i)}{\partial \hat{y}_i^2} \quad \text{(hessian)}$$
                 </div>
 
                 <h3>Step 3: Build a New Tree</h3>
                 <p>Grow a decision tree by finding splits that minimize the objective function:</p>
                 <div class="formula">
-$$\text{Gain} = \frac{1}{2}\left[\frac{G_L^2}{H_L + \lambda} + \frac{G_R^2}{H_R + \lambda} - \frac{(G_L + G_R)^2}{H_L + H_R + \lambda}\right] - \gamma$$
+                    $$\text{Gain} = \frac{1}{2}\left[\frac{G_L^2}{H_L + \lambda} + \frac{G_R^2}{H_R + \lambda} -
+                    \frac{(G_L + G_R)^2}{H_L + H_R + \lambda}\right] - \gamma$$
                 </div>
-                <p>Where \(G\) and \(H\) are sums of gradients and hessians, \(L\) and \(R\) denote left and right splits.</p>
+                <p>Where \(G\) and \(H\) are sums of gradients and hessians, \(L\) and \(R\) denote left and right
+                    splits.</p>
 
                 <h3>Step 4: Update Predictions</h3>
                 <p>Add the new tree's predictions with a learning rate:</p>
@@ -124,9 +149,10 @@ $$\text{Gain} = \frac{1}{2}\left[\frac{G_L^2}{H_L + \lambda} + \frac{G_R^2}{H_R 
                 <h2 id="interactive-demo">Interactive Demo: Regression Example</h2>
                 <div class="interactive-demo">
                     <p style="margin-bottom: 20px;">
-                        Adjust the parameters below to see how XGBoost learns a non-linear function. Watch how each boosting round reduces the error!
+                        Adjust the parameters below to see how XGBoost learns a non-linear function. Watch how each
+                        boosting round reduces the error!
                     </p>
-                    
+
                     <div class="controls">
                         <div class="control-group">
                             <label for="n-estimators">Number of Trees:</label>
@@ -148,15 +174,16 @@ $$\text{Gain} = \frac{1}{2}\left[\frac{G_L^2}{H_L + \lambda} + \frac{G_R^2}{H_R 
 
                     <div class="metrics-display" id="metrics-display"></div>
                 </div>
-                
-                <div class="plot-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px;">
-                    <div style="background: white; border-radius: 8px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" data-aos="zoom-in" data-aos-delay="100">
+
+                <div class="plot-grid"
+                    style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px;">
+                    <div class="plot-tile" data-aos="zoom-in" data-aos-delay="100">
                         <div id="predictions-plot"></div>
                     </div>
-                    <div style="background: white; border-radius: 8px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" data-aos="zoom-in" data-aos-delay="200">
+                    <div class="plot-tile" data-aos="zoom-in" data-aos-delay="200">
                         <div id="residuals-plot"></div>
                     </div>
-                    <div style="background: white; border-radius: 8px; padding: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);" data-aos="zoom-in" data-aos-delay="300">
+                    <div class="plot-tile" data-aos="zoom-in" data-aos-delay="300">
                         <div id="learning-curve"></div>
                     </div>
                 </div>
@@ -166,9 +193,10 @@ $$\text{Gain} = \frac{1}{2}\left[\frac{G_L^2}{H_L + \lambda} + \frac{G_R^2}{H_R 
             <div class="section" data-aos="fade-up">
                 <h2 id="tree-visualization">Tree Structure Visualization</h2>
                 <p>
-                    Below you can see the actual decision trees built by XGBoost. Each tree makes binary splits on features to partition the data and assign predictions to leaf nodes.
+                    Below you can see the actual decision trees built by XGBoost. Each tree makes binary splits on
+                    features to partition the data and assign predictions to leaf nodes.
                 </p>
-                
+
                 <div class="trees-grid" id="trees-grid"></div>
             </div>
 
@@ -176,16 +204,18 @@ $$\text{Gain} = \frac{1}{2}\left[\frac{G_L^2}{H_L + \lambda} + \frac{G_R^2}{H_R 
             <div class="section" data-aos="fade-up">
                 <h2 id="sequential-building">Sequential Tree Building Process</h2>
                 <p>
-                    Step through the boosting process to see how each tree is added sequentially. Watch how predictions improve and residuals shrink with each new tree.
+                    Step through the boosting process to see how each tree is added sequentially. Watch how predictions
+                    improve and residuals shrink with each new tree.
                 </p>
-                
+
                 <div class="step-controls">
-                    <button id="prev-btn" onclick="previousStep()">← Previous</button>
+                    <button id="prev-btn" onclick="previousStep()"> Previous</button>
                     <span class="current-step" id="step-display">Step 0: Initial Prediction</span>
-                    <button id="next-btn" onclick="nextStep()">Next →</button>
+                    <button id="next-btn" onclick="nextStep()">Next </button>
                 </div>
 
-                <div class="sequential-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
+                <div class="sequential-grid"
+                    style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
                     <div class="tree-container" id="sequential-tree-view"></div>
                     <div class="tree-container" id="sequential-predictions-plot"></div>
                 </div>
@@ -194,17 +224,20 @@ $$\text{Gain} = \frac{1}{2}\left[\frac{G_L^2}{H_L + \lambda} + \frac{G_R^2}{H_R 
             <!-- Key Features -->
             <div class="section" data-aos="fade-up">
                 <h2 id="key-features">Key Features of XGBoost</h2>
-                
+
                 <h3>1. Regularization</h3>
                 <p>XGBoost adds L1 and L2 regularization to prevent overfitting:</p>
                 <div class="formula">
-$$\text{Objective} = \sum_{i=1}^{n} L(y_i, \hat{y}_i) + \sum_{k=1}^{K} \Omega(f_k)$$
-$$\text{where } \Omega(f) = \gamma T + \frac{1}{2}\lambda \sum_{j=1}^{T} w_j^2$$
+                    $$\text{Objective} = \sum_{i=1}^{n} L(y_i, \hat{y}_i) + \sum_{k=1}^{K} \Omega(f_k)$$
+                    $$\text{where } \Omega(f) = \gamma T + \frac{1}{2}\lambda \sum_{j=1}^{T} w_j^2 + \alpha
+                    \sum_{j=1}^{T} |w_j|$$
                 </div>
-                <p>Here, \(\gamma\) penalizes the number of leaves (\(T\)), and \(\lambda\) penalizes large leaf weights (\(w\)).</p>
+                <p>Here, \(\gamma\) penalizes the number of leaves (\(T\)), \(\lambda\) (L2) penalizes large leaf
+                    weights, and \(\alpha\) (L1) encourages sparsity.</p>
 
                 <h3>2. Tree Pruning</h3>
-                <p>Uses a "max_depth" parameter and prunes trees backward, removing splits that don't provide sufficient gain.</p>
+                <p>Uses a <code>max_depth</code> parameter and prunes trees backward, removing splits that don't provide
+                    sufficient gain.</p>
 
                 <h3>3. Handling Missing Values</h3>
                 <p>Automatically learns the best direction to handle missing values during tree building.</p>
@@ -213,30 +246,34 @@ $$\text{where } \Omega(f) = \gamma T + \frac{1}{2}\lambda \sum_{j=1}^{T} w_j^2$$
                 <p>Parallelizes tree construction by sorting features beforehand and using multiple threads.</p>
 
                 <h3>5. Column Subsampling</h3>
-                <p>Randomly samples features for each tree (like Random Forests) to reduce overfitting and speed up training.</p>
+                <p>Randomly samples features for each tree (like Random Forests) to reduce overfitting and speed up
+                    training.</p>
             </div>
 
             <!-- Mathematical Foundation -->
             <div class="section" data-aos="fade-up">
                 <h2 id="mathematical-foundation">Mathematical Foundation</h2>
-                
+
                 <div class="key-concept">
                     <h4>Taylor Expansion Approximation</h4>
                     <p>
-                        XGBoost uses a second-order Taylor expansion to approximate the loss function. This allows for faster optimization:
+                        XGBoost uses a second-order Taylor expansion to approximate the loss function. This allows for
+                        faster optimization:
                     </p>
                     <div class="formula">
-$$L(y_i, \hat{y}_i^{(t)}) \approx L(y_i, \hat{y}_i^{(t-1)}) + g_i f_t(x_i) + \frac{1}{2}h_i f_t^2(x_i)$$
+                        $$L(y_i, \hat{y}_i^{(t)}) \approx L(y_i, \hat{y}_i^{(t-1)}) + g_i f_t(x_i) + \frac{1}{2}h_i
+                        f_t^2(x_i)$$
                     </div>
                     <p>
-                        This quadratic approximation makes the optimization problem convex and solvable in closed form for each leaf.
+                        This quadratic approximation makes the optimization problem convex and solvable in closed form
+                        for each leaf.
                     </p>
                 </div>
 
                 <h3>Optimal Leaf Weight</h3>
                 <p>For each leaf \(j\), the optimal weight is calculated as:</p>
                 <div class="formula">
-$$w_j^* = -\frac{\sum_{i \in I_j} g_i}{\sum_{i \in I_j} h_i + \lambda}$$
+                    $$w_j^* = -\frac{\sum_{i \in I_j} g_i}{\sum_{i \in I_j} h_i + \lambda}$$
                 </div>
                 <p>Where \(I_j\) represents the set of instances in leaf \(j\).</p>
             </div>
@@ -244,7 +281,7 @@ $$w_j^* = -\frac{\sum_{i \in I_j} g_i}{\sum_{i \in I_j} h_i + \lambda}$$
             <!-- Practical Tips -->
             <div class="section" data-aos="fade-up">
                 <h2 id="hyperparameter-tuning">Hyperparameter Tuning Tips</h2>
-                
+
                 <div class="info-box">
                     <strong>Key Parameters to Tune:</strong>
                 </div>
@@ -252,7 +289,8 @@ $$w_j^* = -\frac{\sum_{i \in I_j} g_i}{\sum_{i \in I_j} h_i + \lambda}$$
                 <h3>Tree-Specific Parameters</h3>
                 <ul style="margin-left: 20px; line-height: 2;">
                     <li><code>max_depth</code>: Controls tree depth (3-10 typically works well)</li>
-                    <li><code>min_child_weight</code>: Minimum sum of instance weight in a child (prevents overfitting)</li>
+                    <li><code>min_child_weight</code>: Minimum sum of instance weight in a child (prevents overfitting)
+                    </li>
                     <li><code>gamma</code>: Minimum loss reduction for a split (regularization)</li>
                 </ul>
 
@@ -273,8 +311,8 @@ $$w_j^* = -\frac{\sum_{i \in I_j} g_i}{\sum_{i \in I_j} h_i + \lambda}$$
                 <div class="key-concept" style="margin-top: 30px;">
                     <h4>General Strategy</h4>
                     <p>
-                        Start with a low learning rate (0.1) and many trees. Increase max_depth gradually. 
-                        Add regularization (subsample, colsample_bytree) if overfitting. Use early stopping 
+                        Start with a low learning rate (0.1) and many trees. Increase <code>max_depth</code> gradually.
+                        Add regularization (subsample, <code>colsample_bytree</code>) if overfitting. Use early stopping
                         with a validation set to find the optimal number of trees.
                     </p>
                 </div>
@@ -293,35 +331,49 @@ $$w_j^* = -\frac{\sum_{i \in I_j} g_i}{\sum_{i \in I_j} h_i + \lambda}$$
                         </tr>
                     </thead>
                     <tbody>
-                        <tr style="background: #f8f9fa;">
+                        <tr>
                             <td style="padding: 12px; border: 1px solid #ddd;"><strong>Training</strong></td>
                             <td style="padding: 12px; border: 1px solid #ddd;" data-label="XGBoost: ">Sequential</td>
-                            <td style="padding: 12px; border: 1px solid #ddd;" data-label="Random Forest: ">Parallel</td>
-                            <td style="padding: 12px; border: 1px solid #ddd;" data-label="Gradient Boosting: ">Sequential</td>
+                            <td style="padding: 12px; border: 1px solid #ddd;" data-label="Random Forest: ">Parallel
+                            </td>
+                            <td style="padding: 12px; border: 1px solid #ddd;" data-label="Gradient Boosting: ">
+                                Sequential</td>
                         </tr>
                         <tr>
                             <td style="padding: 12px; border: 1px solid #ddd;"><strong>Regularization</strong></td>
-                            <td style="padding: 12px; border: 1px solid #ddd;" data-label="XGBoost: "><span class="checkmark">✓</span> Built-in L1/L2</td>
-                            <td style="padding: 12px; border: 1px solid #ddd;" data-label="Random Forest: "><span class="xmark">✗</span> Limited</td>
-                            <td style="padding: 12px; border: 1px solid #ddd;" data-label="Gradient Boosting: "><span class="xmark">✗</span> Limited</td>
+                            <td style="padding: 12px; border: 1px solid #ddd;" data-label="XGBoost: "><span
+                                    class="checkmark">✓</span> Built-in L1/L2</td>
+                            <td style="padding: 12px; border: 1px solid #ddd;" data-label="Random Forest: "><span
+                                    class="xmark">✗</span> Limited</td>
+                            <td style="padding: 12px; border: 1px solid #ddd;" data-label="Gradient Boosting: "><span
+                                    class="xmark">✗</span> Limited</td>
                         </tr>
-                        <tr style="background: #f8f9fa;">
+                        <tr>
                             <td style="padding: 12px; border: 1px solid #ddd;"><strong>Speed</strong></td>
-                            <td style="padding: 12px; border: 1px solid #ddd;" data-label="XGBoost: ">Fast (optimized)</td>
-                            <td style="padding: 12px; border: 1px solid #ddd;" data-label="Random Forest: ">Fast (parallel)</td>
-                            <td style="padding: 12px; border: 1px solid #ddd;" data-label="Gradient Boosting: ">Slower</td>
+                            <td style="padding: 12px; border: 1px solid #ddd;" data-label="XGBoost: ">Fast (optimized)
+                            </td>
+                            <td style="padding: 12px; border: 1px solid #ddd;" data-label="Random Forest: ">Fast
+                                (parallel)</td>
+                            <td style="padding: 12px; border: 1px solid #ddd;" data-label="Gradient Boosting: ">Slower
+                            </td>
                         </tr>
                         <tr>
                             <td style="padding: 12px; border: 1px solid #ddd;"><strong>Missing Values</strong></td>
-                            <td style="padding: 12px; border: 1px solid #ddd;" data-label="XGBoost: "><span class="checkmark">✓</span> Automatic handling</td>
-                            <td style="padding: 12px; border: 1px solid #ddd;" data-label="Random Forest: "><span class="xmark">✗</span> Needs preprocessing</td>
-                            <td style="padding: 12px; border: 1px solid #ddd;" data-label="Gradient Boosting: "><span class="xmark">✗</span> Needs preprocessing</td>
+                            <td style="padding: 12px; border: 1px solid #ddd;" data-label="XGBoost: "><span
+                                    class="checkmark">✓</span> Automatic handling</td>
+                            <td style="padding: 12px; border: 1px solid #ddd;" data-label="Random Forest: "><span
+                                    class="xmark">✗</span> Needs preprocessing</td>
+                            <td style="padding: 12px; border: 1px solid #ddd;" data-label="Gradient Boosting: "><span
+                                    class="xmark">✗</span> Needs preprocessing</td>
                         </tr>
-                        <tr style="background: #f8f9fa;">
+                        <tr>
                             <td style="padding: 12px; border: 1px solid #ddd;"><strong>Overfitting Risk</strong></td>
-                            <td style="padding: 12px; border: 1px solid #ddd;" data-label="XGBoost: ">Low (with regularization)</td>
-                            <td style="padding: 12px; border: 1px solid #ddd;" data-label="Random Forest: ">Low (ensemble)</td>
-                            <td style="padding: 12px; border: 1px solid #ddd;" data-label="Gradient Boosting: ">Higher</td>
+                            <td style="padding: 12px; border: 1px solid #ddd;" data-label="XGBoost: ">Low (with
+                                regularization)</td>
+                            <td style="padding: 12px; border: 1px solid #ddd;" data-label="Random Forest: ">Low
+                                (ensemble)</td>
+                            <td style="padding: 12px; border: 1px solid #ddd;" data-label="Gradient Boosting: ">Higher
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -330,15 +382,20 @@ $$w_j^* = -\frac{\sum_{i \in I_j} g_i}{\sum_{i \in I_j} h_i + \lambda}$$
             <!-- When to Use XGBoost -->
             <div class="section" data-aos="fade-up">
                 <h2 id="when-to-use">When to Use XGBoost</h2>
-                
+
                 <div class="key-concept">
                     <h4>XGBoost excels in these scenarios:</h4>
                     <ul style="margin-left: 20px; line-height: 2;">
-                        <li><strong>Structured/tabular data:</strong> XGBoost is one of the top choices for datasets with rows and columns (not images or text)</li>
-                        <li><strong>Medium-to-large datasets:</strong> Works well with thousands to millions of samples</li>
-                        <li><strong>Mixed feature types:</strong> Handles both numerical and categorical features effectively</li>
-                        <li><strong>Competition/production:</strong> Industry standard for Kaggle competitions and production ML pipelines</li>
-                        <li><strong>When you need interpretability:</strong> Feature importance and SHAP values provide model explanations</li>
+                        <li><strong>Structured/tabular data:</strong> XGBoost is one of the top choices for datasets
+                            with rows and columns (not images or text)</li>
+                        <li><strong>Medium-to-large datasets:</strong> Works well with thousands to millions of samples
+                        </li>
+                        <li><strong>Mixed feature types:</strong> Handles both numerical and categorical features
+                            effectively</li>
+                        <li><strong>Competition/production:</strong> Industry standard for Kaggle competitions and
+                            production ML pipelines</li>
+                        <li><strong>When you need interpretability:</strong> Feature importance and SHAP values provide
+                            model explanations</li>
                         <li><strong>Imbalanced datasets:</strong> Built-in support for handling class imbalance</li>
                     </ul>
                 </div>
@@ -355,7 +412,8 @@ $$w_j^* = -\frac{\sum_{i \in I_j} g_i}{\sum_{i \in I_j} h_i + \lambda}$$
             </div>
         </div>
 
-        <div style="text-align: center; padding: 30px; background: #ecf0f1; color: #7f8c8d; font-size: 0.9em; border-top: 1px solid #bdc3c7;">
+        <div
+            style="text-align: center; padding: 30px; color: #7f8c8d; font-size: 0.9em; border-top: 1px solid #dcdfe3;">
             © 2026 Leon Shpaner. All rights reserved.
         </div>
     </div>
@@ -363,4 +421,5 @@ $$w_j^* = -\frac{\sum_{i \in I_j} g_i}{\sum_{i \in I_j} h_i + \lambda}$$
     <!-- Custom JavaScript -->
     <script src="script.js"></script>
 </body>
+
 </html>

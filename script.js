@@ -282,7 +282,7 @@
                 height: 320,
                 margin: {l: 50, r: 20, t: 40, b: 70},
                 paper_bgcolor: 'white',
-                plot_bgcolor: '#fafafa'
+                plot_bgcolor: 'white'
             };
 
             Plotly.newPlot('predictions-plot', traces, layout, {responsive: true});
@@ -315,7 +315,7 @@
                 height: 320,
                 margin: {l: 50, r: 20, t: 40, b: 50},
                 paper_bgcolor: 'white',
-                plot_bgcolor: '#fafafa'
+                plot_bgcolor: 'white'
             };
 
             Plotly.newPlot('residuals-plot', [trace], layout, {responsive: true});
@@ -349,7 +349,7 @@
                 height: 320,
                 margin: {l: 50, r: 20, t: 40, b: 50},
                 paper_bgcolor: 'white',
-                plot_bgcolor: '#fafafa'
+                plot_bgcolor: 'white'
             };
 
             Plotly.newPlot('learning-curve', [trace], layout, {responsive: true});
@@ -557,7 +557,7 @@
             } else {
                 container.innerHTML = `
                     <h4 style="color: #2c3e50; margin-bottom: 15px; font-size: 1.1em;">Initial State</h4>
-                    <div style="display: flex; align-items: center; justify-content: center; min-height: 380px; background: #fafafa; border: 2px dashed #bdc3c7; border-radius: 4px;">
+                    <div style="display: flex; align-items: center; justify-content: center; min-height: 380px; background: #ffffff; border: 1px dashed #dcdfe3;">
                         <p style="text-align: center; color: #7f8c8d; padding: 40px; max-width: 350px; line-height: 1.6;">
                             No tree yet - this is the initial prediction (mean of target values)
                         </p>
@@ -633,7 +633,7 @@
                 height: 400,
                 margin: {l: 60, r: 30, t: 50, b: 90},
                 paper_bgcolor: 'white',
-                plot_bgcolor: '#fafafa'
+                plot_bgcolor: 'white'
             };
 
             Plotly.newPlot('sequential-predictions-plot', traces, layout, {responsive: true});

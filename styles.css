@@ -6,7 +6,7 @@
 
 body {
     font-family: Arial, Helvetica, sans-serif;
-    background: #f5f7fa;
+    background: #ffffff;
     min-height: 100vh;
     padding: 20px;
 }
@@ -14,9 +14,7 @@ body {
 .container {
     max-width: 1200px;
     margin: 0 auto;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    background: #ffffff;
     overflow: hidden;
 }
 
@@ -72,11 +70,10 @@ body {
 }
 
 .interactive-demo {
-    background: #f8f9fa;
-    border-radius: 12px;
+    background: #ffffff;
     padding: 30px;
     margin: 20px 0;
-    border: 2px solid #e0e0e0;
+    border: 1px solid #dcdfe3;
 }
 
 .controls {
@@ -107,7 +104,6 @@ input[type="range"] {
 input[type="number"] {
     padding: 8px;
     border: 2px solid #ddd;
-    border-radius: 6px;
     font-size: 1em;
     width: 100px;
 }
@@ -117,7 +113,6 @@ button {
     color: white;
     border: none;
     padding: 12px 24px;
-    border-radius: 4px;
     font-size: 1em;
     font-weight: 500;
     cursor: pointer;
@@ -140,29 +135,32 @@ button:disabled {
 
 .plot-container {
     background: white;
-    border-radius: 8px;
+    border: 1px solid #dcdfe3;
     padding: 20px;
     margin: 20px 0;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     min-height: 380px;
 }
 
-.formula {
-    background: #f8f9fa;
+.plot-tile {
+    background: white;
+    border: 1px solid #dcdfe3;
     padding: 15px;
-    border-left: 4px solid #00838f;
+}
+
+.formula {
+    background: transparent;
+    padding: 15px 15px 15px 20px;
+    border-left: 3px solid #00838f;
     margin: 15px 0;
-    border-radius: 4px;
     overflow-x: auto;
     font-size: 1.1em;
 }
 
 .key-concept {
-    background: #ecf0f1;
-    border-left: 4px solid #2c3e50;
-    padding: 20px;
+    background: transparent;
+    border-left: 3px solid #2c3e50;
+    padding: 5px 0 5px 20px;
     margin: 20px 0;
-    border-radius: 4px;
 }
 
 .key-concept h4 {
@@ -185,8 +183,8 @@ button:disabled {
     top: 20px;
     left: 0;
     right: 0;
-    height: 2px;
-    background: #ddd;
+    height: 1px;
+    background: #dcdfe3;
     z-index: 0;
 }
 
@@ -231,10 +229,9 @@ button:disabled {
 }
 
 .metric-card {
-    background: white;
+    background: #ffffff;
     padding: 20px;
-    border-radius: 4px;
-    border: 2px solid #e0e0e0;
+    border: 1px solid #dcdfe3;
     text-align: center;
 }
 
@@ -252,9 +249,8 @@ button:disabled {
 }
 
 code {
-    background: #f5f5f5;
-    padding: 2px 6px;
-    border-radius: 3px;
+    background: transparent;
+    padding: 0 1px;
     font-family: 'Courier New', monospace;
     color: #d63384;
 }
@@ -263,24 +259,21 @@ code {
     margin: 20px 0;
     padding: 20px;
     background: white;
-    border-radius: 8px;
     overflow-x: auto;
 }
 
 .info-box {
-    background: #fff9e6;
-    border-left: 4px solid #f39c12;
-    padding: 15px;
+    background: transparent;
+    border-left: 3px solid #f39c12;
+    padding: 5px 0 5px 20px;
     margin: 15px 0;
-    border-radius: 4px;
 }
 
 .tree-container {
     background: white;
-    border-radius: 4px;
+    border: 1px solid #dcdfe3;
     padding: 20px;
     margin: 20px 0;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     overflow: hidden;
 }
 
@@ -343,9 +336,8 @@ code {
 }
 
 .single-tree-view {
-    background: #fafafa;
-    border: 2px solid #e0e0e0;
-    border-radius: 4px;
+    background: #ffffff;
+    border: 1px solid #dcdfe3;
     padding: 15px;
     min-height: 500px;
     overflow: visible;
@@ -436,7 +428,6 @@ code {
     .comparison-table tr {
         margin-bottom: 20px;
         border: 2px solid #2c3e50;
-        border-radius: 8px;
         padding: 15px;
         background: white;
     }
@@ -488,9 +479,7 @@ code {
     padding: 0;
     width: 50px;
     height: 50px;
-    border-radius: 8px;
     cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
     transition: all 0.3s ease;
     font-size: 28px;
     color: white;
@@ -555,7 +544,7 @@ code {
     transition: right 0.3s ease; /* Changed from left */
     overflow-y: auto;
     padding: 80px 30px 30px 30px;
-    box-shadow: -4px 0 12px rgba(0,0,0,0.3); /* Shadow on left side */
+    border-left: 1px solid #1a252f;
 }
 
 .nav-menu.active {
@@ -587,7 +576,6 @@ code {
     font-size: 1em;
     display: block;
     padding: 10px 15px;
-    border-radius: 6px;
     transition: all 0.3s ease;
 }
 
