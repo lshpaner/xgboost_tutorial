@@ -89,7 +89,8 @@ a {
 
 .masthead {
     padding: 4.5rem 0 2rem;
-    border-bottom: 3px double var(--ink);
+    border-bottom: 3px solid var(--ink);
+    box-shadow: 0 5px 0 -4px var(--ink);
     margin-bottom: 3rem;
 }
 
@@ -338,8 +339,6 @@ code {
 .demo {
     margin: 1.5rem 0;
     padding: 1.75rem;
-    background: var(--panel);
-    border: 1px solid var(--rule);
 }
 
 .demo .intro {
@@ -455,8 +454,6 @@ button.ghost:disabled {
 }
 
 .plot-tile {
-    background: var(--panel);
-    border: 1px solid var(--rule);
     padding: 0.5rem;
     min-width: 0;
 }
@@ -471,8 +468,6 @@ button.ghost:disabled {
 }
 
 .single-tree-view {
-    background: var(--panel);
-    border: 1px solid var(--rule);
     padding: 1rem;
     overflow-x: auto;
 }
@@ -529,8 +524,6 @@ button.ghost:disabled {
 }
 
 .tree-container {
-    background: var(--panel);
-    border: 1px solid var(--rule);
     padding: 1rem 1rem 1.5rem;
     overflow-x: auto;
     min-width: 0;
@@ -1043,4 +1036,96 @@ kbd {
     .article { padding-right: 0; }
     .sidenote { float: none; display: block; width: auto; margin: 0.3rem 0 0.6rem 1.5rem; }
     a { color: #000; }
+}
+
+/* ---------- Frames with corner brackets ---------- */
+
+.demo,
+.plot-tile,
+.single-tree-view,
+.tree-container {
+    border: 1px solid var(--rule-soft);
+    position: relative;
+    background:
+        linear-gradient(var(--ink), var(--ink)) top left / 1.25rem 1px no-repeat,
+        linear-gradient(var(--ink), var(--ink)) top left / 1px 1.25rem no-repeat,
+        linear-gradient(var(--ink), var(--ink)) top right / 1.25rem 1px no-repeat,
+        linear-gradient(var(--ink), var(--ink)) top right / 1px 1.25rem no-repeat,
+        linear-gradient(var(--ink), var(--ink)) bottom left / 1.25rem 1px no-repeat,
+        linear-gradient(var(--ink), var(--ink)) bottom left / 1px 1.25rem no-repeat,
+        linear-gradient(var(--ink), var(--ink)) bottom right / 1.25rem 1px no-repeat,
+        linear-gradient(var(--ink), var(--ink)) bottom right / 1px 1.25rem no-repeat,
+        var(--panel);
+}
+
+.tree-container .empty {
+    border: 1px dashed var(--rule);
+}
+
+/* Tables: Oxford rule on top, double rule to close */
+.comparison-table {
+    border-top: 3px solid var(--ink);
+    box-shadow: 0 -5px 0 -4px var(--ink);
+    border-bottom: 3px double var(--ink);
+}
+
+.comparison-table th {
+    border-bottom: 1px solid var(--ink);
+}
+
+.comparison-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* Metrics row: thin rule above, hanging numerals */
+.metrics-display {
+    border-top: 1px solid var(--ink);
+    padding-top: 0.5rem;
+}
+
+/* Buttons: letterpress offset */
+button {
+    box-shadow: 2px 2px 0 var(--ink);
+    transition: transform 0.08s, box-shadow 0.08s, background 0.15s;
+}
+
+button:active {
+    transform: translate(2px, 2px);
+    box-shadow: 0 0 0 var(--ink);
+}
+
+button:disabled {
+    box-shadow: none;
+    transform: none;
+}
+
+.topbar button {
+    box-shadow: 2px 2px 0 var(--ink);
+}
+
+/* Menu panel: double rule on its edge */
+.nav-menu {
+    border-left: 3px double var(--ink);
+}
+
+/* Formulas: a thin rule hangs off the equation number */
+.formula::after {
+    padding-left: 0.6rem;
+    border-left: 1px solid var(--rule);
+}
+
+/* Colophon: Oxford rule */
+.colophon {
+    border-top: 3px solid var(--ink);
+    box-shadow: 0 -5px 0 -4px var(--ink);
+}
+
+/* Figure captions: short rule above */
+figcaption::after {
+    content: none;
+}
+
+figcaption {
+    padding-top: 0.5rem;
+    background: linear-gradient(var(--ink), var(--ink)) top left / 3rem 1px no-repeat;
 }
