@@ -1,3 +1,34 @@
+// Palette read from styles.css so plots follow the light / dark theme
+function cssVar(name) {
+    return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
+function pal() {
+    return {
+        ink: cssVar('--ink'), muted: cssVar('--muted'), rule: cssVar('--rule'),
+        panel: cssVar('--panel'), accent: cssVar('--accent'), moss: cssVar('--moss'),
+        mossSoft: cssVar('--moss-soft'), grid: cssVar('--grid'),
+        leaves: [cssVar('--leaf-1'), cssVar('--leaf-2'), cssVar('--leaf-3')]
+    };
+}
+const FONT = '"Times New Roman", Times, serif';
+const MONO = '"Times New Roman", Times, serif';
+function axis(title) {
+    const p = pal();
+    return {
+        gridcolor: p.grid, zerolinecolor: p.rule, linecolor: p.rule,
+        tickfont: {size: 11, family: MONO, color: p.muted},
+        title: {text: title, font: {size: 12, family: MONO, color: p.muted}}
+    };
+}
+function baseLayout(titleText) {
+    const p = pal();
+    return {
+        title: {text: titleText, x: 0, xanchor: 'left', font: {size: 13, family: FONT, color: p.ink}},
+        paper_bgcolor: p.panel, plot_bgcolor: p.panel,
+        font: {family: FONT, color: p.ink}
+    };
+}
+
         // Global variables for tree visualization
         let globalTrees = [];
         let globalX = [];
@@ -8,6 +39,23 @@
         let globalYMax = 0;
         let mainPlotYMin = 0;
         let mainPlotYMax = 0;
+        let lastRun = null;
+
+        function drawMainPlots() {
+            if (!lastRun) return;
+            const r = lastRun;
+            plotPredictions(r.X, r.y, r.predictionHistory);
+            plotResiduals(r.y, r.predictions);
+            plotLearningCurve(r.mseHistory);
+            displayMetrics(r.y, r.predictions, r.nEstimators);
+        }
+
+        function redrawForTheme() {
+            if (!lastRun) return;
+            drawMainPlots();
+            visualizeTrees(globalTrees);
+            updateSequentialView();
+        }
 
         // Update slider values display
         document.getElementById('n-estimators').addEventListener('input', function(e) {
@@ -70,11 +118,8 @@
                 });
             }
 
-            // Plot results
-            plotPredictions(X, y, predictionHistory);
-            plotResiduals(y, predictions);
-            plotLearningCurve(mseHistory);
-            displayMetrics(y, predictions, nEstimators);
+            lastRun = {X, y, predictionHistory, predictions, mseHistory, nEstimators};
+            drawMainPlots();
 
             // Calculate global y-axis limits for sequential plot
             const allPredictions = globalPredictionHistory.flatMap(step => step.predictions);
@@ -230,8 +275,8 @@
                     y: y,
                     mode: 'markers',
                     type: 'scatter',
-                    name: 'True Data',
-                    marker: {color: '#34495e', size: 10, opacity: 0.6}
+                    name: 'Data',
+                    marker: {color: pal().muted, size: 8, opacity: 0.55}
                 }
             ];
 
@@ -241,8 +286,8 @@
                 y: predictionHistory[0],
                 mode: 'lines',
                 type: 'scatter',
-                name: 'Initial (Mean)',
-                line: {color: '#95a5a6', width: 3, dash: 'dash'}
+                name: 'Initial constant',
+                line: {color: pal().muted, width: 1.5, dash: 'dot'}
             });
 
             // Add final prediction
@@ -252,27 +297,18 @@
                 y: final,
                 mode: 'lines',
                 type: 'scatter',
-                name: 'Final Prediction',
-                line: {color: '#2c3e50', width: 4}
+                name: 'Ensemble',
+                line: {color: pal().accent, width: 2.5}
             });
 
             const layout = {
-                title: {
-                    text: 'Predictions vs True Data',
-                    font: {size: 14, family: 'Inter, sans-serif'}
-                },
-                xaxis: {
-                    title: {text: 'X', font: {size: 12, family: 'Inter, sans-serif'}},
-                    tickfont: {size: 10, family: 'Inter, sans-serif'}
-                },
-                yaxis: {
-                    title: {text: 'Y', font: {size: 12, family: 'Inter, sans-serif'}},
-                    tickfont: {size: 10, family: 'Inter, sans-serif'}
-                },
+                ...baseLayout('Fit against the data'),
+                xaxis: axis('x'),
+                yaxis: axis('y'),
                 hovermode: 'closest',
                 showlegend: true,
                 legend: {
-                    font: {size: 10, family: 'Inter, sans-serif'},
+                    font: {size: 10, family: MONO, color: pal().muted},
                     orientation: 'h',
                     yanchor: 'top',
                     y: -0.15,
@@ -280,12 +316,10 @@
                     x: 0.5
                 },
                 height: 320,
-                margin: {l: 50, r: 20, t: 40, b: 70},
-                paper_bgcolor: 'white',
-                plot_bgcolor: 'white'
+                margin: {l: 50, r: 20, t: 40, b: 70}
             };
 
-            Plotly.newPlot('predictions-plot', traces, layout, {responsive: true});
+            Plotly.newPlot('predictions-plot', traces, layout, {responsive: true, displayModeBar: false});
         }
 
         function plotResiduals(y, predictions) {
@@ -295,30 +329,19 @@
                 y: residuals,
                 type: 'box',
                 name: 'Residuals',
-                marker: {
-                    color: '#34495e',
-                    size: 8
-                },
+                marker: {color: pal().moss, size: 6}, line: {color: pal().moss, width: 1.5}, fillcolor: pal().mossSoft,
                 boxmean: 'sd'
             };
 
             const layout = {
-                title: {
-                    text: 'Residual Distribution',
-                    font: {size: 14, family: 'Inter, sans-serif'}
-                },
-                yaxis: {
-                    title: {text: 'Residual Value', font: {size: 12, family: 'Inter, sans-serif'}},
-                    tickfont: {size: 10, family: 'Inter, sans-serif'}
-                },
+                ...baseLayout('Residuals'),
+                yaxis: axis('residual'),
                 showlegend: false,
                 height: 320,
-                margin: {l: 50, r: 20, t: 40, b: 50},
-                paper_bgcolor: 'white',
-                plot_bgcolor: 'white'
+                margin: {l: 50, r: 20, t: 40, b: 50}
             };
 
-            Plotly.newPlot('residuals-plot', [trace], layout, {responsive: true});
+            Plotly.newPlot('residuals-plot', [trace], layout, {responsive: true, displayModeBar: false});
         }
 
         function plotLearningCurve(mseHistory) {
@@ -328,31 +351,20 @@
                 mode: 'lines+markers',
                 type: 'scatter',
                 name: 'MSE',
-                line: {color: '#2c3e50', width: 3},
-                marker: {size: 10, color: '#2c3e50'}
+                line: {color: pal().accent, width: 2},
+                marker: {size: 7, color: pal().accent}
             };
 
             const layout = {
-                title: {
-                    text: 'Learning Curve',
-                    font: {size: 14, family: 'Inter, sans-serif'}
-                },
-                xaxis: {
-                    title: {text: 'Boosting Round', font: {size: 12, family: 'Inter, sans-serif'}},
-                    tickfont: {size: 10, family: 'Inter, sans-serif'}
-                },
-                yaxis: {
-                    title: {text: 'MSE', font: {size: 12, family: 'Inter, sans-serif'}},
-                    tickfont: {size: 10, family: 'Inter, sans-serif'}
-                },
+                ...baseLayout('Training error by round'),
+                xaxis: axis('round'),
+                yaxis: axis('MSE'),
                 showlegend: false,
                 height: 320,
-                margin: {l: 50, r: 20, t: 40, b: 50},
-                paper_bgcolor: 'white',
-                plot_bgcolor: 'white'
+                margin: {l: 50, r: 20, t: 40, b: 50}
             };
 
-            Plotly.newPlot('learning-curve', [trace], layout, {responsive: true});
+            Plotly.newPlot('learning-curve', [trace], layout, {responsive: true, displayModeBar: false});
         }
 
         function displayMetrics(y, predictions, nTrees) {
@@ -388,7 +400,7 @@
             container.innerHTML = '';
             
             // Define colors for each tree
-            const treeColors = ['#CAEDFB', '#FBE2D5', '#DAF2D0'];
+            const treeColors = pal().leaves;
             
             // Show first 3 trees
             const treesToShow = trees.slice(0, Math.min(3, trees.length));
@@ -408,7 +420,7 @@
         }
 
         // Draw a single tree using D3
-        function drawTree(root, containerId, width, height, leafColor = '#00695c') {
+        function drawTree(root, containerId, width, height, leafColor = pal().leaves[0]) {
             const container = document.getElementById(containerId);
             container.innerHTML = '';
             
@@ -479,7 +491,7 @@
                 .attr('y1', d => d.source.y)
                 .attr('x2', d => d.target.x + offsetX)
                 .attr('y2', d => d.target.y)
-                .attr('stroke', '#95a5a6')
+                .attr('stroke', pal().rule)
                 .attr('stroke-width', 2);
             
             // Draw nodes
@@ -490,16 +502,21 @@
                 .attr('class', d => `tree-node ${d.data.type}`)
                 .attr('transform', d => `translate(${d.x + offsetX},${d.y})`);
             
+            nodes.append('title')
+                .text(d => d.data.type === 'leaf'
+                    ? `leaf: weight ${d.data.value.toFixed(3)}, n = ${d.data.samples}`
+                    : `split at x ≤ ${d.data.threshold.toFixed(2)}, n = ${d.data.samples}`);
+
             nodes.append('circle')
                 .attr('r', 22)
-                .style('fill', d => d.data.type === 'leaf' ? leafColor : '#ffffff')
-                .style('stroke', '#2c3e50')
+                .style('fill', d => d.data.type === 'leaf' ? leafColor : pal().panel)
+                .style('stroke', pal().ink)
                 .style('stroke-width', d => d.data.type === 'split' ? '2.5px' : '2px');
             
             nodes.append('text')
                 .attr('dy', '.35em')
                 .attr('text-anchor', 'middle')
-                .style('fill', '#2c3e50')
+                .style('fill', d => d.data.type === 'leaf' ? cssVar('--leaf-ink') : pal().ink)
                 .style('font-size', '11px')
                 .style('font-weight', '600')
                 .text(d => {
@@ -516,7 +533,7 @@
                 .attr('text-anchor', 'middle')
                 .style('font-size', '11px')
                 .style('font-weight', '600')
-                .style('fill', '#2c3e50')
+                .style('fill', pal().ink)
                 .text(d => `n=${d.data.samples}`);
         }
 
@@ -533,9 +550,9 @@
             
             // Update step display
             if (currentStepIndex === 0) {
-                document.getElementById('step-display').textContent = 'Step 0: Initial Prediction (Mean)';
+                document.getElementById('step-display').textContent = 'Round 0: initial constant';
             } else {
-                document.getElementById('step-display').textContent = `Step ${currentStepIndex}: After Tree ${currentStepIndex}`;
+                document.getElementById('step-display').textContent = `Round ${currentStepIndex}: after tree ${currentStepIndex}`;
             }
             
             // Draw current tree
@@ -543,7 +560,7 @@
             container.innerHTML = '';
             
             if (step.tree) {
-                container.innerHTML = `<h4 style="color: #2c3e50; margin-bottom: 15px; font-size: 1.1em;">Tree ${step.tree.id + 1} Structure</h4>`;
+                container.innerHTML = `<h4>Tree ${step.tree.id + 1}</h4>`;
                 const treeDiv = document.createElement('div');
                 treeDiv.id = 'current-tree-viz';
                 treeDiv.style.width = '100%';
@@ -551,16 +568,14 @@
                 container.appendChild(treeDiv);
                 
                 // Cycle through colors
-                const treeColors = ['#CAEDFB', '#FBE2D5', '#DAF2D0'];
+                const treeColors = pal().leaves;
                 const colorIndex = step.tree.id % 3;
                 drawTree(step.tree.root, 'current-tree-viz', 500, 380, treeColors[colorIndex]);
             } else {
                 container.innerHTML = `
-                    <h4 style="color: #2c3e50; margin-bottom: 15px; font-size: 1.1em;">Initial State</h4>
-                    <div style="display: flex; align-items: center; justify-content: center; min-height: 380px; background: #ffffff; border: 1px dashed #dcdfe3;">
-                        <p style="text-align: center; color: #7f8c8d; padding: 40px; max-width: 350px; line-height: 1.6;">
-                            No tree yet - this is the initial prediction (mean of target values)
-                        </p>
+                    <h4>Before the first tree</h4>
+                    <div class="empty">
+                        <p>Nothing has been grown yet. The prediction is the mean of the targets, the same for every sample.</p>
                     </div>
                 `;
             }
@@ -594,36 +609,27 @@
                     y: globalY,
                     mode: 'markers',
                     type: 'scatter',
-                    name: 'True Data',
-                    marker: {color: '#34495e', size: 8, opacity: 0.6}
+                    name: 'Data',
+                    marker: {color: pal().muted, size: 7, opacity: 0.55}
                 },
                 {
                     x: globalX,
                     y: step.predictions,
                     mode: 'lines',
                     type: 'scatter',
-                    name: 'Current Prediction',
-                    line: {color: '#e74c3c', width: 3}
+                    name: 'Ensemble so far',
+                    line: {color: pal().accent, width: 2.5}
                 }
             ];
 
             const layout = {
-                title: {
-                    text: `Predictions at Step ${stepIndex} (MSE: ${step.mse.toFixed(3)})`,
-                    font: {size: 18, family: 'Inter, sans-serif'}
-                },
-                xaxis: {
-                    title: {text: 'X', font: {size: 14, family: 'Inter, sans-serif'}},
-                    tickfont: {size: 12, family: 'Inter, sans-serif'}
-                },
-                yaxis: {
-                    title: {text: 'Y', font: {size: 14, family: 'Inter, sans-serif'}},
-                    tickfont: {size: 12, family: 'Inter, sans-serif'}
-                },
+                ...baseLayout(`Round ${stepIndex} · MSE ${step.mse.toFixed(3)}`),
+                xaxis: axis('x'),
+                yaxis: axis('y'),
                 hovermode: 'closest',
                 showlegend: true,
                 legend: {
-                    font: {size: 12, family: 'Inter, sans-serif'},
+                    font: {size: 10, family: MONO, color: pal().muted},
                     orientation: 'h',
                     yanchor: 'top',
                     y: -0.2,
@@ -631,51 +637,90 @@
                     x: 0.5
                 },
                 height: 400,
-                margin: {l: 60, r: 30, t: 50, b: 90},
-                paper_bgcolor: 'white',
-                plot_bgcolor: 'white'
+                margin: {l: 60, r: 30, t: 50, b: 90}
             };
 
-            Plotly.newPlot('sequential-predictions-plot', traces, layout, {responsive: true});
+            Plotly.newPlot('sequential-predictions-plot', traces, layout, {responsive: true, displayModeBar: false});
         }
 
         // Run demo on page load
         window.addEventListener('load', runXGBoostDemo);
 
 
-        // Initialize AOS animations
-        AOS.init({
-            duration: 800,
-            easing: 'ease-in-out',
-            once: true,
-            offset: 100
+        // Keyboard: arrows step rounds, d toggles theme
+        document.addEventListener('keydown', e => {
+            const tag = (e.target.tagName || '').toLowerCase();
+            if (tag === 'input' || tag === 'textarea' || e.metaKey || e.ctrlKey || e.altKey) return;
+            if (e.key === 'ArrowRight') { nextStep(); }
+            else if (e.key === 'ArrowLeft') { previousStep(); }
+            else if (e.key === 'd' || e.key === 'D') { document.getElementById('themeToggle').click(); }
         });
 
-        // Hamburger Menu Functionality
+        // Reading progress
+        (function () {
+            const bar = document.getElementById('progress');
+            function update() {
+                const max = document.documentElement.scrollHeight - window.innerHeight;
+                bar.style.width = (max > 0 ? (window.scrollY / max) * 100 : 0) + '%';
+            }
+            window.addEventListener('scroll', update, {passive: true});
+            window.addEventListener('resize', update);
+            update();
+        })();
+
+        // Light / dark toggle
+        const themeToggle = document.getElementById('themeToggle');
+        themeToggle.addEventListener('click', () => {
+            const root = document.documentElement;
+            const dark = root.getAttribute('data-theme') === 'dark';
+            if (dark) root.removeAttribute('data-theme'); else root.setAttribute('data-theme', 'dark');
+            localStorage.setItem('theme', dark ? 'light' : 'dark');
+            redrawForTheme();
+        });
+
+        // Contents panel
         const hamburger = document.getElementById('hamburger');
         const navMenu = document.getElementById('navMenu');
         const overlay = document.getElementById('overlay');
-        const navLinks = document.querySelectorAll('.nav-menu a');
+        const navLinks = Array.from(document.querySelectorAll('.nav-menu a'));
 
-        function toggleMenu() {
-            hamburger.classList.toggle('active');
-            navMenu.classList.toggle('active');
-            overlay.classList.toggle('active');
+        function toggleMenu(force) {
+            const open = typeof force === 'boolean' ? force : !navMenu.classList.contains('active');
+            hamburger.classList.toggle('active', open);
+            navMenu.classList.toggle('active', open);
+            overlay.classList.toggle('active', open);
+            hamburger.setAttribute('aria-expanded', String(open));
         }
 
-        hamburger.addEventListener('click', toggleMenu);
-        overlay.addEventListener('click', toggleMenu);
+        hamburger.addEventListener('click', () => toggleMenu());
+        overlay.addEventListener('click', () => toggleMenu(false));
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') toggleMenu(false); });
 
-        // Smooth scroll to sections
         navLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
+            link.addEventListener('click', e => {
                 e.preventDefault();
-                const targetId = link.getAttribute('href').substring(1);
-                const targetSection = document.getElementById(targetId);
-                
-                if (targetSection) {
-                    targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    toggleMenu(); // Close menu after clicking
+                const target = document.getElementById(link.getAttribute('href').slice(1));
+                if (target) {
+                    target.scrollIntoView({behavior: 'smooth', block: 'start'});
+                    toggleMenu(false);
                 }
             });
         });
+
+        // Mark the current section in the contents panel
+        (function () {
+            const sections = navLinks
+                .map(a => document.getElementById(a.getAttribute('href').slice(1)))
+                .filter(Boolean);
+            if (!('IntersectionObserver' in window) || !sections.length) return;
+            const byId = new Map(navLinks.map(a => [a.getAttribute('href').slice(1), a]));
+            const observer = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) return;
+                    navLinks.forEach(a => a.classList.remove('is-active'));
+                    const link = byId.get(entry.target.id);
+                    if (link) link.classList.add('is-active');
+                });
+            }, {rootMargin: '-10% 0px -70% 0px'});
+            sections.forEach(sec => observer.observe(sec));
+        })();
