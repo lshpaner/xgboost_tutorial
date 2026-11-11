@@ -430,22 +430,28 @@ function baseLayout(titleText) {
                 return 1 + Math.max(getDepth(node.left), getDepth(node.right));
             }
             
+            function countLeaves(node) {
+                return node.type === 'leaf' ? 1 : countLeaves(node.left) + countLeaves(node.right);
+            }
+
             const depth = getDepth(root);
-            const adjustedWidth = Math.max(width, depth * 80);
+            const leaves = countLeaves(root);
+            const adjustedWidth = Math.max(width, leaves * 62);
             
             const svg = d3.select(`#${containerId}`)
                 .append('svg')
                 .attr('width', '100%')
                 .attr('height', height)
                 .attr('viewBox', `18 0 ${adjustedWidth} ${height}`)
-                .attr('preserveAspectRatio', 'xMidYMid meet');
+                .attr('preserveAspectRatio', 'xMidYMid meet')
+                .style('min-width', adjustedWidth > width ? `${adjustedWidth}px` : null);
             
             const g = svg.append('g')
                 .attr('transform', `translate(${adjustedWidth / 2}, 30)`);
             
             // Create tree layout with better spacing
             const treeLayout = d3.tree()
-                .size([adjustedWidth - 0.05, height - 80])
+                .size([adjustedWidth - 0.05, height - 125])
                 .separation((a, b) => (a.parent == b.parent ? 1 : 1.2));
             
             // Convert to d3 hierarchy
@@ -527,14 +533,22 @@ function baseLayout(titleText) {
                     }
                 });
             
-            // Add labels below nodes with better visibility
+            // Sample counts: below leaves, beside internal nodes
             nodes.append('text')
-                .attr('dy', '4.9em')
-                .attr('text-anchor', 'middle')
-                .style('font-size', '11px')
-                .style('font-weight', '600')
-                .style('fill', pal().ink)
+                .attr('dx', d => d.data.type === 'leaf' ? 0 : 26)
+                .attr('dy', d => d.data.type === 'leaf' ? '4.9em' : '-0.9em')
+                .attr('text-anchor', d => d.data.type === 'leaf' ? 'middle' : 'start')
+                .style('font-size', '10px')
+                .style('fill', pal().muted)
                 .text(d => `n=${d.data.samples}`);
+
+            // Deep trees overflow sideways; start centered on the root
+            if (adjustedWidth > width) {
+                const scroller = container.closest('.tree-container, .single-tree-view') || container;
+                requestAnimationFrame(() => {
+                    scroller.scrollLeft = (scroller.scrollWidth - scroller.clientWidth) / 2;
+                });
+            }
         }
 
         // Sequential step through

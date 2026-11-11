@@ -474,8 +474,7 @@ button.ghost:disabled {
     background: var(--panel);
     border: 1px solid var(--rule);
     padding: 1rem;
-    min-height: 30rem;
-    overflow: visible;
+    overflow-x: auto;
 }
 
 .single-tree-view h4,
@@ -487,7 +486,7 @@ button.ghost:disabled {
 }
 
 .single-tree-view svg {
-    overflow: visible;
+    display: block;
 }
 
 .tree-node circle {
@@ -532,9 +531,13 @@ button.ghost:disabled {
 .tree-container {
     background: var(--panel);
     border: 1px solid var(--rule);
-    padding: 1rem;
-    overflow: hidden;
+    padding: 1rem 1rem 1.5rem;
+    overflow-x: auto;
     min-width: 0;
+}
+
+.tree-container svg {
+    display: block;
 }
 
 .tree-container .empty {
