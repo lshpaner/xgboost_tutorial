@@ -402,8 +402,10 @@ function baseLayout(titleText) {
             // Define colors for each tree
             const treeColors = pal().leaves;
             
-            // Show first 3 trees
+            // Show first 3 trees; one per row when they are wide
             const treesToShow = trees.slice(0, Math.min(3, trees.length));
+            const big = treesToShow.some(t => countLeavesOf(t.root) > 8);
+            container.classList.toggle('stacked', big);
             
             treesToShow.forEach((tree, idx) => {
                 const treeDiv = document.createElement('div');
@@ -415,8 +417,12 @@ function baseLayout(titleText) {
                 treeDiv.appendChild(svg);
                 container.appendChild(treeDiv);
                 
-                drawTree(tree.root, `tree-${idx}`, 350, 350, treeColors[idx]);
+                drawTree(tree.root, `tree-${idx}`, big ? 900 : 350, 350, treeColors[idx]);
             });
+        }
+
+        function countLeavesOf(node) {
+            return node.type === 'leaf' ? 1 : countLeavesOf(node.left) + countLeavesOf(node.right);
         }
 
         // Draw a single tree using D3
@@ -437,6 +443,7 @@ function baseLayout(titleText) {
             const depth = getDepth(root);
             const leaves = countLeaves(root);
             const adjustedWidth = Math.max(width, leaves * 62);
+            height = Math.max(height, 120 + (depth - 1) * 95);
             
             const svg = d3.select(`#${containerId}`)
                 .append('svg')
@@ -573,6 +580,9 @@ function baseLayout(titleText) {
             const container = document.getElementById('sequential-tree-view');
             container.innerHTML = '';
             
+            const seqGrid = container.parentElement;
+            seqGrid.classList.toggle('stacked', !!step.tree && countLeavesOf(step.tree.root) > 8);
+
             if (step.tree) {
                 container.innerHTML = `<h4>Tree ${step.tree.id + 1}</h4>`;
                 const treeDiv = document.createElement('div');
@@ -584,7 +594,7 @@ function baseLayout(titleText) {
                 // Cycle through colors
                 const treeColors = pal().leaves;
                 const colorIndex = step.tree.id % 3;
-                drawTree(step.tree.root, 'current-tree-viz', 500, 380, treeColors[colorIndex]);
+                drawTree(step.tree.root, 'current-tree-viz', seqGrid.classList.contains('stacked') ? 900 : 500, 380, treeColors[colorIndex]);
             } else {
                 container.innerHTML = `
                     <h4>Before the first tree</h4>

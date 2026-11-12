@@ -523,6 +523,11 @@ button.ghost:disabled {
     gap: 1rem;
 }
 
+.trees-grid.stacked,
+.sequential-grid.stacked {
+    grid-template-columns: 1fr;
+}
+
 .tree-container {
     padding: 1rem 1rem 1.5rem;
     overflow-x: auto;
